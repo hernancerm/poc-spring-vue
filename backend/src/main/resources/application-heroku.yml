@@ -1,2 +1,3 @@
 server:
+  port: ${PORT:8080}
   baseUrl: ${BASE_URL:https://immense-scrubland-00077.herokuapp.com}

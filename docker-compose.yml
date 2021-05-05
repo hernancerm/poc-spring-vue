@@ -1,0 +1,13 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:11.5
+    container_name: postgresdb
+    environment:
+      - POSTGRES_USER=hernan
+      - POSTGRES_PASSWORD=p4ssW0rd
+      - POSTGRES_DB=localdb
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
