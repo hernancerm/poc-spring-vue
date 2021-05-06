@@ -26,7 +26,7 @@ The project is a two-module Maven project; one sub-module for the backend, anoth
 
 The idea for having both the frontend and backend in the **same origin** boils down to having the backend serve the SPA's (Single Page Application) entry file (`index.html`) and let the SPA deal with everything frontend related (data fetching, state management, routing, etc.), whilst the backend merely forwards non-API requests to the SPA and attends API requests.
 
-### How to make Spring Boot serve the SPA's `index.html`
+## How to make Spring Boot serve the SPA
 
 By default, when the root URL is visited, Spring Boot serves the following file:
 
@@ -49,7 +49,25 @@ The idea is to copy the output of Vue's build into the place where Spring Boot e
 
 Additionally, how can the frontend be built by Maven? Otherwise, the frontend would be required to be built through a npm invocation before Maven can use the output. This is done with the [`frontend-maven-plugin`](https://github.com/eirslett/frontend-maven-plugin) (see the `pom.xml` of the frontend sub-module).
 
-### Other configurations
+## Heroku configuration
+
+Create the following config vars in the settings page of your Heroku app:
+
+```
+BASE_URL=<heroku-url-for-you-app>
+MAVEN_CUSTOM_GOALS=clean package
+```
+
+This config vars are read as environment vars by the application.
+
+* `BASE_URL` is used by the Spring configuration and the Vue router.
+* `MAVEN_CUSTOM_GOALS` tells Heroku how to build the project.
+
+In the root of the project, the [Procfile](./Procfile) defines the command used to execute the project. Notice that entire application can be executing through a JAR and that the `heroku` profile is being used.
+
+Heroku assigns a port to the application to bind to, this is provided by Heroku through the env variable `PORT`. In the Spring configuration this env var is read to configure execution. 
+
+## Other configurations
 
 - **Vue's dev server**. With the setup described above, running the project requires Maven to re-build the frontend and re-compile the backend, which can be lengthy. To accelerate frontend development, a dev server is created at `localhost:8080` after running `npm run serve` in the frontend sub-module. **This does require CORS to talk to the backend**, but frontend reload is much faster. CORS is configured in Spring Boot for the dev server (see class `WebConfiguration`).
 - **Spring Boot's route forwarding**. Spring Boot automatically serves `src/resources/public/index.html` when the root URL is visited, however it does not automatically delegate routing to Vue. To allow Vue to handle all the routing, forwarding is required for every route except `/index.html` and `api/*` routes.
