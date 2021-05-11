@@ -2,12 +2,26 @@
 
 ## Executing the project
 
-On the root of the parent Maven project, run: 
+You need:
+
+- (Required) Java 11
+- (Optional) Maven 3
+
+If you have Maven installed, on the root of the project run: 
 
 ```txt
-mvn clean install
+mvn clean package
 mvn -pl backend spring-boot:run
 ```
+
+**If you don't have Maven installed**, you can use one of the provided wrappers for your OS. On Windows use mvnw.cmd and on macOS and Linux use mvnw. Example on macOS:
+
+```txt
+./mvnw clean package
+./mvnw -pl spring-boot:run
+```
+
+Then open the project: <http://localhost:8080/>
 
 ## Application's behavior
 
@@ -18,7 +32,7 @@ Once the application is up and running, the following is true:
 - Route navigation by directly typing in browser nav bar works.
 - The frontend can talk with the backend without CORS config.
   
-Both the frontend and the backend exist in the same origin.
+Both the frontend and the backend exist in the same [origin](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy#definition_of_an_origin).
 
 ## Setup overview
 
@@ -31,7 +45,7 @@ The idea for having both the frontend and backend in the **same origin** boils d
 By default, when the root URL is visited, Spring Boot serves the following file:
 
 ```txt
-src/resources/public/index.html
+src/main/resources/public/index.html
 ```
 
 By default, when a Vue application is built, it outputs the following directory:
@@ -69,5 +83,5 @@ Heroku assigns a port to the application to bind to, this is provided by Heroku 
 
 ## Other configurations
 
-- **Vue's dev server**. With the setup described above, running the project requires Maven to re-build the frontend and re-compile the backend, which can be lengthy. To accelerate frontend development, a dev server is created at `localhost:8080` after running `npm run serve` in the frontend sub-module. **This does require CORS to talk to the backend**, but frontend reload is much faster. CORS is configured in Spring Boot for the dev server (see class `WebConfiguration`).
-- **Spring Boot's route forwarding**. Spring Boot automatically serves `src/resources/public/index.html` when the root URL is visited, however it does not automatically delegate routing to Vue. To allow Vue to handle all the routing, forwarding is required for every route except `/index.html` and `api/*` routes.
+- **Vue's dev server**. With the setup described above, running the project requires Maven to re-build the frontend and re-compile the backend, which can be lengthy. To accelerate frontend development, a dev server is created at `localhost:8081` after running `npm run serve` in the frontend sub-module. **This does require CORS to talk to the backend**, but frontend reload is much faster. CORS is configured in Spring Boot for the dev server (see class [`WebConfiguration`](backend/src/main/java/hercerm/pocspringvue/configuration/WebConfiguration.java)).
+- **Spring Boot's route forwarding**. Spring Boot automatically serves `src/main/resources/public/index.html` when the root URL is visited, however it does not automatically delegate routing to Vue. To allow Vue to handle all the routing, forwarding is required for every route except `/index.html` and `api/*` routes. See the class [`FrontendForwarderController`](backend/src/main/java/hercerm/pocspringvue/configuration/FrontendForwarderController.java).
